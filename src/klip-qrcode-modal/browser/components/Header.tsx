@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as React from 'react';
 
 import { KLIP_HEADER_TEXT, KLIP_CLOSE_BUTTON_ID } from '../constants';

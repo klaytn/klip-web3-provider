@@ -1,11 +1,8 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as React from 'react';
 import QRCode from 'qrcode';
 import copy from 'copy-to-clipboard';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import Notification from './Notification';
-
 import { TextMap } from '../types';
 import { KLIP_CTA_TEXT_ID } from '../constants';
 
