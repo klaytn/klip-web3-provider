@@ -4,24 +4,19 @@
 // Modified for the klip-web3-provider development.
 
 // @ts-ignore
-const { prepare, getResult } = require("klip-sdk");
+const { prepare, getResult } = require('klip-sdk');
 // @ts-ignore
-import SafeEventEmitter from "@metamask/safe-event-emitter";
-import { convertHexToUtf8 } from "@walletconnect/utils";
-import QRCodeModal from "./klip-qrcode-modal";
-import { JSONRPCResponse, JSONRPCRequest, JSONRPCMethod } from "./JSONRPC";
-import { ethErrors } from "eth-rpc-errors";
-import { Web3Provider, RequestArguments } from "./Web3Provider";
-import {
-  SubscriptionManager,
-  SubscriptionNotification,
-  SubscriptionResult,
-} from "./SubscriptionManager";
-import Caver from "caver-js";
-const CypressChainId = "0x2019";
-const ErrorMsgCaverUndefined =
-  "RPC Url is not provided or chain id is different from Klaytn Mainnet.";
-const KlipUrl = "https://klipwallet.com/?target=/a2a?request_key=";
+import SafeEventEmitter from '@metamask/safe-event-emitter';
+import { convertHexToUtf8 } from '@walletconnect/utils';
+import QRCodeModal from './klip-qrcode-modal';
+import { JSONRPCResponse, JSONRPCRequest, JSONRPCMethod } from './JSONRPC';
+import { ethErrors } from 'eth-rpc-errors';
+import { Web3Provider, RequestArguments } from './Web3Provider';
+import { SubscriptionManager, SubscriptionNotification, SubscriptionResult } from './SubscriptionManager';
+import Caver from 'caver-js';
+const CypressChainId = '0x2019';
+const ErrorMsgCaverUndefined = 'RPC Url is not provided or chain id is different from Klaytn Mainnet.';
+const KlipUrl = 'https://klipwallet.com/?target=/a2a?request_key=';
 export type Callback<T> = (err: Error | null, result: T | null) => void;
 
 export interface IKlipProviderOptions {
@@ -37,11 +32,11 @@ export interface IQRCodeModalOptions {
 
 export class KlipWeb3Provider extends SafeEventEmitter implements Web3Provider {
   public qrcode = true;
-  public chainId = "";
+  public chainId = '';
   public qrcodeModal = QRCodeModal;
   public qrcodeModalOptions: IQRCodeModalOptions | undefined = undefined;
-  public bappName = "";
-  public rpcUrl = "";
+  public bappName = '';
+  public rpcUrl = '';
   public caver: any;
   public caverEnabled = false;
   private readonly _subscriptionManager = new SubscriptionManager(this);
@@ -49,22 +44,16 @@ export class KlipWeb3Provider extends SafeEventEmitter implements Web3Provider {
 
   constructor(opts: IKlipProviderOptions) {
     super({});
-    this.bappName = opts.bappName ? opts.bappName : "undefined";
-    this.rpcUrl = opts.rpcUrl ? opts.rpcUrl : "undefined";
-    this.caver =
-      this.rpcUrl != "undefined"
-        ? new Caver(new Caver.providers.HttpProvider(this.rpcUrl))
-        : undefined;
+    this.bappName = opts.bappName ? opts.bappName : 'undefined';
+    this.rpcUrl = opts.rpcUrl ? opts.rpcUrl : 'undefined';
+    this.caver = this.rpcUrl != 'undefined' ? new Caver(new Caver.providers.HttpProvider(this.rpcUrl)) : undefined;
     this.chainId = this.getChainId();
-    this._subscriptionManager.events.on(
-      "notification",
-      (notification: SubscriptionNotification) => {
-        this.emit("message", {
-          type: notification.method,
-          data: notification.params,
-        });
-      }
-    );
+    this._subscriptionManager.events.on('notification', (notification: SubscriptionNotification) => {
+      this.emit('message', {
+        type: notification.method,
+        data: notification.params,
+      });
+    });
   }
 
   private async _checkRpcUrl(): Promise<boolean> {
@@ -90,25 +79,15 @@ export class KlipWeb3Provider extends SafeEventEmitter implements Web3Provider {
 
   public send(request: JSONRPCRequest): JSONRPCResponse;
   public send(request: JSONRPCRequest[]): JSONRPCResponse[];
-  public send(
-    request: JSONRPCRequest,
-    callback: Callback<JSONRPCResponse>
-  ): void;
-  public send(
-    request: JSONRPCRequest[],
-    callback: Callback<JSONRPCResponse[]>
-  ): void;
+  public send(request: JSONRPCRequest, callback: Callback<JSONRPCResponse>): void;
+  public send(request: JSONRPCRequest[], callback: Callback<JSONRPCResponse[]>): void;
   public send<T = any>(method: string, params?: any[] | any): Promise<T>;
   public send(
     requestOrMethod: JSONRPCRequest | JSONRPCRequest[] | string,
-    callbackOrParams?:
-      | Callback<JSONRPCResponse>
-      | Callback<JSONRPCResponse[]>
-      | any[]
-      | any
+    callbackOrParams?: Callback<JSONRPCResponse> | Callback<JSONRPCResponse[]> | any[] | any,
   ): JSONRPCResponse | JSONRPCResponse[] | void | Promise<any> {
     // send<T>(method, params): Promise<T>
-    if (typeof requestOrMethod === "string") {
+    if (typeof requestOrMethod === 'string') {
       const method = requestOrMethod;
       const params = Array.isArray(callbackOrParams)
         ? callbackOrParams
@@ -116,7 +95,7 @@ export class KlipWeb3Provider extends SafeEventEmitter implements Web3Provider {
         ? [callbackOrParams]
         : [];
       const request: JSONRPCRequest = {
-        jsonrpc: "2.0",
+        jsonrpc: '2.0',
         id: 0,
         method,
         params,
@@ -125,7 +104,7 @@ export class KlipWeb3Provider extends SafeEventEmitter implements Web3Provider {
     }
 
     // send(JSONRPCRequest | JSONRPCRequest[], callback): void
-    if (typeof callbackOrParams === "function") {
+    if (typeof callbackOrParams === 'function') {
       const request = requestOrMethod as any;
       const callback = callbackOrParams;
       return this._sendAsync(request, callback);
@@ -142,21 +121,15 @@ export class KlipWeb3Provider extends SafeEventEmitter implements Web3Provider {
     return this._sendRequest(req);
   }
 
-  public sendAsync(
-    request: JSONRPCRequest,
-    callback: Callback<JSONRPCResponse>
-  ): void;
-  public sendAsync(
-    request: JSONRPCRequest[],
-    callback: Callback<JSONRPCResponse[]>
-  ): void;
+  public sendAsync(request: JSONRPCRequest, callback: Callback<JSONRPCResponse>): void;
+  public sendAsync(request: JSONRPCRequest[], callback: Callback<JSONRPCResponse[]>): void;
 
   public async sendAsync(
     request: JSONRPCRequest | JSONRPCRequest[],
-    callback: Callback<JSONRPCResponse> | Callback<JSONRPCResponse[]>
+    callback: Callback<JSONRPCResponse> | Callback<JSONRPCResponse[]>,
   ): Promise<void> {
-    if (typeof callback !== "function") {
-      throw new Error("callback is required");
+    if (typeof callback !== 'function') {
+      throw new Error('callback is required');
     }
 
     // send(JSONRPCRequest[], callback): void
@@ -176,27 +149,23 @@ export class KlipWeb3Provider extends SafeEventEmitter implements Web3Provider {
   }
 
   public async request<T>(args: RequestArguments): Promise<T> {
-    if (!args || typeof args !== "object" || Array.isArray(args)) {
+    if (!args || typeof args !== 'object' || Array.isArray(args)) {
       throw ethErrors.rpc.invalidRequest({
-        message: "Expected a single, non-array, object argument.",
+        message: 'Expected a single, non-array, object argument.',
         data: args,
       });
     }
 
     const { method, params } = args;
 
-    if (typeof method !== "string" || method.length === 0) {
+    if (typeof method !== 'string' || method.length === 0) {
       throw ethErrors.rpc.invalidRequest({
         message: "'args.method' must be a non-empty string.",
         data: args,
       });
     }
 
-    if (
-      params !== undefined &&
-      !Array.isArray(params) &&
-      (typeof params !== "object" || params === null)
-    ) {
+    if (params !== undefined && !Array.isArray(params) && (typeof params !== 'object' || params === null)) {
       throw ethErrors.rpc.invalidRequest({
         message: "'args.params' must be an object or array if provided.",
         data: args,
@@ -208,7 +177,7 @@ export class KlipWeb3Provider extends SafeEventEmitter implements Web3Provider {
     const res = await this._sendRequestAsync({
       method,
       params: newParams,
-      jsonrpc: "2.0",
+      jsonrpc: '2.0',
       id: 0,
     });
     return res.result as T;
@@ -219,7 +188,7 @@ export class KlipWeb3Provider extends SafeEventEmitter implements Web3Provider {
 
   private _sendRequest(request: JSONRPCRequest): JSONRPCResponse {
     const response: JSONRPCResponse = {
-      jsonrpc: "2.0",
+      jsonrpc: '2.0',
       id: request.id,
     };
     const { method } = request;
@@ -230,7 +199,7 @@ export class KlipWeb3Provider extends SafeEventEmitter implements Web3Provider {
       throw new Error(
         `Kaikas Wallet does not support calling ${method} synchronously without ` +
           `a callback. Please provide a callback parameter to call ${method} ` +
-          `asynchronously.`
+          `asynchronously.`,
       );
     }
     return response;
@@ -242,7 +211,7 @@ export class KlipWeb3Provider extends SafeEventEmitter implements Web3Provider {
         const syncResult = this._handleSynchronousMethods(request);
         if (syncResult !== undefined) {
           return resolve({
-            jsonrpc: "2.0",
+            jsonrpc: '2.0',
             id: request.id,
             result: syncResult,
           });
@@ -253,10 +222,10 @@ export class KlipWeb3Provider extends SafeEventEmitter implements Web3Provider {
           subscriptionPromise
             .then((res) =>
               resolve({
-                jsonrpc: "2.0",
+                jsonrpc: '2.0',
                 id: request.id,
                 result: res.result,
-              })
+              }),
             )
             .catch((err) => reject(err));
           return;
@@ -271,9 +240,7 @@ export class KlipWeb3Provider extends SafeEventEmitter implements Web3Provider {
     });
   }
 
-  private _handleSubscriptionMethods(
-    request: JSONRPCRequest
-  ): Promise<SubscriptionResult> | undefined {
+  private _handleSubscriptionMethods(request: JSONRPCRequest): Promise<SubscriptionResult> | undefined {
     switch (request.method) {
       case JSONRPCMethod.eth_subscribe:
       case JSONRPCMethod.eth_unsubscribe:
@@ -282,9 +249,7 @@ export class KlipWeb3Provider extends SafeEventEmitter implements Web3Provider {
 
     return undefined;
   }
-  private _sendMultipleRequestsAsync(
-    requests: JSONRPCRequest[]
-  ): Promise<JSONRPCResponse[]> {
+  private _sendMultipleRequestsAsync(requests: JSONRPCRequest[]): Promise<JSONRPCResponse[]> {
     return Promise.all(requests.map((r) => this._sendRequestAsync(r)));
   }
 
@@ -306,9 +271,7 @@ export class KlipWeb3Provider extends SafeEventEmitter implements Web3Provider {
     }
   }
 
-  private async _handleAsynchronousMethods(
-    request: JSONRPCRequest
-  ): Promise<JSONRPCResponse | void> {
+  private async _handleAsynchronousMethods(request: JSONRPCRequest): Promise<JSONRPCResponse | void> {
     const { method } = request;
     const params = request.params || [];
     switch (method) {
@@ -350,26 +313,26 @@ export class KlipWeb3Provider extends SafeEventEmitter implements Web3Provider {
       } else if (res.request_key) {
         const klipLink = KlipUrl + res.request_key;
         this.qrcodeModal.open(klipLink, () => {
-          this.emit("modal_closed");
+          this.emit('modal_closed');
         });
         const interval = setInterval(() => {
           getResult(res.request_key).then((data: any) => {
-            if (data.status == "completed") {
+            if (data.status == 'completed') {
               this.qrcodeModal.close();
               clearInterval(interval);
               this._addresses = [data.result.klaytn_address];
               return resolve([data.result.klaytn_address]);
-            } else if (data.status == "canceled" || data.status == "error") {
+            } else if (data.status == 'canceled' || data.status == 'error') {
               this.qrcodeModal.close();
               clearInterval(interval);
               this._addresses = [];
-              return reject(new Error("Process is canceled or error occurs"));
+              return reject(new Error('Process is canceled or error occurs'));
             }
           });
         }, 1000);
-        this.on("modal_closed", () => {
+        this.on('modal_closed', () => {
           clearInterval(interval);
-          return reject(new Error("QRCode modal is closed!"));
+          return reject(new Error('QRCode modal is closed!'));
         });
       }
     });
@@ -390,7 +353,7 @@ export class KlipWeb3Provider extends SafeEventEmitter implements Web3Provider {
   private async _personal_sign(params: unknown[]): Promise<JSONRPCResponse> {
     return new Promise<JSONRPCResponse>(async (resolve, reject) => {
       const bappName = this.bappName;
-      const value = typeof params[0] === "string" ? params[0] : "undefined"; //message
+      const value = typeof params[0] === 'string' ? params[0] : 'undefined'; //message
       const from = params[1];
       const res = await prepare.signMessage({
         bappName,
@@ -402,28 +365,28 @@ export class KlipWeb3Provider extends SafeEventEmitter implements Web3Provider {
       } else if (res.request_key) {
         const klipLink = KlipUrl + res.request_key;
         this.qrcodeModal.open(klipLink, () => {
-          this.emit("modal_closed");
+          this.emit('modal_closed');
         });
         const interval = setInterval(() => {
           getResult(res.request_key).then((data: any) => {
-            if (data.status == "completed") {
+            if (data.status == 'completed') {
               this.qrcodeModal.close();
               clearInterval(interval);
               return resolve({
-                jsonrpc: "2.0",
+                jsonrpc: '2.0',
                 id: 0,
                 result: data.result.signature,
               });
-            } else if (data.status == "canceled" || data.status == "error") {
+            } else if (data.status == 'canceled' || data.status == 'error') {
               this.qrcodeModal.close();
               clearInterval(interval);
-              return reject(new Error("Process is canceled or error occurs"));
+              return reject(new Error('Process is canceled or error occurs'));
             }
           });
         }, 1000);
-        this.on("modal_closed", () => {
+        this.on('modal_closed', () => {
           clearInterval(interval);
-          return reject(new Error("QRCode modal is closed!"));
+          return reject(new Error('QRCode modal is closed!'));
         });
       }
     });
@@ -432,18 +395,12 @@ export class KlipWeb3Provider extends SafeEventEmitter implements Web3Provider {
   private async _eth_sendTransaction(params: any[]): Promise<JSONRPCResponse> {
     // send token transaction & send klay transaction
     return new Promise<JSONRPCResponse>(async (resolve, reject) => {
-      if (params[0].hasOwnProperty("data") && params[0]["data"] != "") {
-        return reject(
-          new Error(
-            "This provider cannot be used to execute smart contract functions."
-          )
-        );
+      if (params[0].hasOwnProperty('data') && params[0]['data'] != '') {
+        return reject(new Error('This provider cannot be used to execute smart contract functions.'));
       }
       const bappName = this.bappName;
-      const to = params[0]["to"];
-      const amount = (Number(params[0]["value"]) * Number(10 ** -18))
-        .toFixed(6)
-        .toString();
+      const to = params[0]['to'];
+      const amount = (Number(params[0]['value']) * Number(10 ** -18)).toFixed(6).toString();
       const res = await prepare.sendKLAY({
         bappName,
         to,
@@ -455,28 +412,28 @@ export class KlipWeb3Provider extends SafeEventEmitter implements Web3Provider {
       } else if (res.request_key) {
         const klipLink = KlipUrl + res.request_key;
         this.qrcodeModal.open(klipLink, () => {
-          this.emit("modal_closed");
+          this.emit('modal_closed');
         });
         const interval = setInterval(() => {
           getResult(res.request_key).then((data: any) => {
-            if (data.status == "completed") {
+            if (data.status == 'completed') {
               this.qrcodeModal.close();
               clearInterval(interval);
               return resolve({
-                jsonrpc: "2.0",
+                jsonrpc: '2.0',
                 id: 0,
                 result: data.result.tx_hash,
               });
-            } else if (data.status == "canceled" || data.status == "error") {
+            } else if (data.status == 'canceled' || data.status == 'error') {
               this.qrcodeModal.close();
               clearInterval(interval);
-              return reject(new Error("Process is canceled or error occurs"));
+              return reject(new Error('Process is canceled or error occurs'));
             }
           });
         }, 1000);
-        this.on("modal_closed", () => {
+        this.on('modal_closed', () => {
           clearInterval(interval);
-          return reject(new Error("QRCode modal is closed!"));
+          return reject(new Error('QRCode modal is closed!'));
         });
       }
     });
@@ -487,27 +444,23 @@ export class KlipWeb3Provider extends SafeEventEmitter implements Web3Provider {
       throw new Error(ErrorMsgCaverUndefined);
     }
     const result = await this.caver.rpc.klay.call(params[0], params[1]);
-    return { jsonrpc: "2.0", id: 0, result };
+    return { jsonrpc: '2.0', id: 0, result };
   }
 
-  private async _personal_ecRecover(
-    params: unknown[]
-  ): Promise<JSONRPCResponse> {
+  private async _personal_ecRecover(params: unknown[]): Promise<JSONRPCResponse> {
     if (this.caver == undefined || !this.caverEnabled) {
       throw new Error(ErrorMsgCaverUndefined);
     }
     const address = await this.caver.utils.recover(params[0], params[1]);
-    return { jsonrpc: "2.0", id: 0, result: address };
+    return { jsonrpc: '2.0', id: 0, result: address };
   }
 
-  private async _eth_getTransactionReceipt(
-    params: unknown[]
-  ): Promise<JSONRPCResponse> {
+  private async _eth_getTransactionReceipt(params: unknown[]): Promise<JSONRPCResponse> {
     if (this.caver == undefined || !this.caverEnabled) {
       throw new Error(ErrorMsgCaverUndefined);
     }
     const receipt = await this.caver.rpc.klay.getTransactionReceipt(params[0]);
-    return { jsonrpc: "2.0", id: 0, result: receipt };
+    return { jsonrpc: '2.0', id: 0, result: receipt };
   }
 
   private async _eth_blockNumber(): Promise<JSONRPCResponse> {
@@ -515,20 +468,15 @@ export class KlipWeb3Provider extends SafeEventEmitter implements Web3Provider {
       throw new Error(ErrorMsgCaverUndefined);
     }
     const blockNumber = await this.caver.rpc.klay.getBlockNumber();
-    return { jsonrpc: "2.0", id: 0, result: blockNumber };
+    return { jsonrpc: '2.0', id: 0, result: blockNumber };
   }
 
-  private async _eth_getBlockByNumber(
-    params: unknown[]
-  ): Promise<JSONRPCResponse> {
+  private async _eth_getBlockByNumber(params: unknown[]): Promise<JSONRPCResponse> {
     if (this.caver == undefined || !this.caverEnabled) {
       throw new Error(ErrorMsgCaverUndefined);
     }
-    const block = await this.caver.rpc.klay.getBlockByNumber(
-      params[0],
-      params[1]
-    );
-    return { jsonrpc: "2.0", id: 0, result: block };
+    const block = await this.caver.rpc.klay.getBlockByNumber(params[0], params[1]);
+    return { jsonrpc: '2.0', id: 0, result: block };
   }
 
   private async _eth_getGasPrice(): Promise<JSONRPCResponse> {
@@ -536,6 +484,6 @@ export class KlipWeb3Provider extends SafeEventEmitter implements Web3Provider {
       throw new Error(ErrorMsgCaverUndefined);
     }
     const result = await this.caver.rpc.klay.getGasPrice();
-    return { jsonrpc: "2.0", id: 0, result: result };
+    return { jsonrpc: '2.0', id: 0, result: result };
   }
 }

@@ -3,8 +3,8 @@
 // This file is derived from coinbase-wallet-sdk/packages/wallet-sdk/src/provider/Web3Provider.ts (2022/08/01).
 // Modified for the klip-web3-provider development.
 
-import { Callback } from "./types";
-import { JSONRPCRequest, JSONRPCResponse } from "./JSONRPC";
+import { Callback } from './types';
+import { JSONRPCRequest, JSONRPCResponse } from './JSONRPC';
 
 export interface Web3Provider {
   send(request: JSONRPCRequest): JSONRPCResponse;
@@ -14,10 +14,7 @@ export interface Web3Provider {
   send<T = any>(method: string, params?: any[] | any): Promise<T>;
 
   sendAsync(request: JSONRPCRequest, callback: Callback<JSONRPCResponse>): void;
-  sendAsync(
-    request: JSONRPCRequest[],
-    callback: Callback<JSONRPCResponse[]>
-  ): void;
+  sendAsync(request: JSONRPCRequest[], callback: Callback<JSONRPCResponse[]>): void;
 
   request<T>(args: RequestArguments): Promise<T>;
 
