@@ -4,14 +4,14 @@
 // Modified for the klip-web3-provider development.
 
 interface Tag<T extends string, RealType> {
-  __tag__: T;
-  __realType__: RealType;
+    __tag__: T;
+    __realType__: RealType;
 }
 
 export type OpaqueType<T extends string, U> = U & Tag<T, U>;
 
 export function OpaqueType<T extends Tag<any, any>>() {
-  return (value: T extends Tag<any, infer U> ? U : never): T => value as T;
+    return (value: T extends Tag<any, infer U> ? U : never): T => value as T;
 }
 
 export type HexString = OpaqueType<'HexString', string>;
@@ -25,7 +25,7 @@ export const BigIntString = OpaqueType<BigIntString>();
 
 export type IntNumber = OpaqueType<'IntNumber', number>;
 export function IntNumber(num: number): IntNumber {
-  return Math.floor(num) as IntNumber;
+    return Math.floor(num) as IntNumber;
 }
 
 export type RegExpString = OpaqueType<'RegExpString', string>;

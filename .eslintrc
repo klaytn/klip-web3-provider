@@ -1,0 +1,15 @@
+{
+    "parser": "@typescript-eslint/parser",
+    "plugins": ["@typescript-eslint"],
+    "extends": ["plugin:@typescript-eslint/recommended", "prettier", "plugin:prettier/recommended"],
+    "parserOptions": {
+        "ecmaVersion": 2018, // Allows for the parsing of modern ECMAScript features
+        "sourceType": "module" // Allows for the use of imports
+    },
+    "rules": {
+        "no-console": "warn",
+        "@typescript-eslint/no-var-requires": "off",
+        "@typescript-eslint/no-empty-function": "off",
+        "@typescript-eslint/no-explicit-any": "off"
+    }
+}
