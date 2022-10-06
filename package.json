@@ -18,12 +18,13 @@
         "@walletconnect/browser-utils": "^1.8.0",
         "@walletconnect/types": "^1.8.0",
         "@walletconnect/utils": "^1.8.0",
-        "caver-js": "^1.9.0",
+        "caver-js": "1.9.0",
         "copy-to-clipboard": "^3.3.1",
         "eth-json-rpc-filters": "4.2.2",
         "eth-rpc-errors": "4.0.2",
         "json-rpc-engine": "6.1.0",
-        "klip-sdk": "^2.2.0"
+        "klip-sdk": "2.2.0",
+        "qrcode": "^1.5.1"
     },
     "devDependencies": {
         "@types/jest": "^29.1.1",
