@@ -11,10 +11,8 @@ jobs:
     - uses: actions/setup-node@v3
       with:
         node-version: 16
-    - name: Install dependency
+    - name: Install dependency, build package
       run: npm install
-    - name: Build package
-      run: npm run build
     - name: Publish package to npm.js
       uses: JS-DevTools/npm-publish@v1
       with:
