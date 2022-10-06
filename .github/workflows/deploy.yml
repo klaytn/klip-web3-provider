@@ -1,0 +1,22 @@
+name: Publish NPM package
+on:
+  push:
+    tags:
+     - v**
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 16
+    - name: Install dependency
+      run: npm install
+    - name: Build package
+      run: npm run build
+    - name: Publish package to npm.js
+      uses: JS-DevTools/npm-publish@v1
+      with:
+        token: ${{ secrets.NPM_TOKEN }}
+        access: public
